@@ -12,13 +12,13 @@ Na prática uma palavra como "hello word", supondo que sejam representados por v
 
 Isso seria sua posição em um vetor. Neste outro exemplo mais simplista, podemos ver a semelhança do significado das palavras "cat e "felino" com sua representação dos vetores em um diagrama:
 
-embeddings-example
+![embeddings-example](https://raw.githubusercontent.com/Darlley/langchain-course/main/embeddings-example.png)
 
 Tendo isto em mente, os algoritmos de modelos de aprendizado de máquina realizam um cálculo de aritmética vetorial. Temos as palavras "king" (2, 5), "man" (1, 3) e "woman" (1, 4). Quero o significado da palavra king, remover o contexto da palavra man e adicionar a palavra woman: 
 
 (2, 5) - (1, 3) + (1, 4) = (2, 6) 
 
-embeddings-calculate.excalidraw
+![embeddings-calculate.excalidraw](https://raw.githubusercontent.com/Darlley/langchain-course/main/embeddings-calculate.png)
 
 Imaginando que exista a palavra "queen" na posição (2, 6.2) esta seria o significado que o algoritmo iria utilizar em sua resposta.
 
