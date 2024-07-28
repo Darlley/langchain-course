@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+IA - EMBEDDINGS
 
-## Getting Started
+Quando você faz uma pergunta ela precisa traduzi-la em um formato que a IA entende: os embeddings, sinônimo de vetores, que é um conceito matemático e significa colocar um objeto em um espaço diferente.
 
-First, run the development server:
+> [!NOTE]
+> Os modelos de aprendizado de máquina usam vetores (matrizes de números) como entrada. Ao trabalhar com texto, a primeira coisa que você deve fazer é criar uma estratégia para converter strings em números (ou "vetorizar" o texto) antes de alimentá-lo ao modelo. [https://www.tensorflow.org/text/guide/word_embeddings?hl=pt-br](https://www.tensorflow.org/text/guide/word_embeddings?hl=pt-br)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Na prática uma palavra como "hello word", supondo que sejam representados por vetores de 1536 dimensões (quantidade que os modelos open source utilizam), seriam representados assim:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- "hello": [0.12, 0.25, ..., 0.87]
+- "world": [0.34, 0.44, ..., 0.56]
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Isso seria sua posição em um vetor. Neste outro exemplo mais simplista, podemos ver a semelhança do significado das palavras "cat e "felino" com sua representação dos vetores em um diagrama:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+embeddings-example
 
-## Learn More
+Tendo isto em mente, os algoritmos de modelos de aprendizado de máquina realizam um cálculo de aritmética vetorial. Temos as palavras "king" (2, 5), "man" (1, 3) e "woman" (1, 4). Quero o significado da palavra king, remover o contexto da palavra man e adicionar a palavra woman: 
 
-To learn more about Next.js, take a look at the following resources:
+(2, 5) - (1, 3) + (1, 4) = (2, 6) 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+embeddings-calculate.excalidraw
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Imaginando que exista a palavra "queen" na posição (2, 6.2) esta seria o significado que o algoritmo iria utilizar em sua resposta.
 
-## Deploy on Vercel
+> [!NOTE]
+> Por que isso é útil? Depois de gerarmos incorporações em vários textos, é trivial calcular o quão semelhantes eles são usando operações matemáticas vetoriais como distância de cosseno. Um caso de uso perfeito para isso é a pesquisa. Seu processo pode ter a seguinte aparência:
+> 
+> 1. Pré-processe sua base de conhecimento e gere incorporações para cada página
+> 2. Armazene suas incorporações para serem referenciadas posteriormente (mais sobre isso)
+> 3. Criar uma página de pesquisa que solicite a entrada do usuário
+> 4. Receba a entrada do usuário, gere uma incorporação única e execute uma pesquisa de similaridade em relação às incorporações pré-processadas.
+> 5. Retornar as páginas mais semelhantes para o usuário
+> 
+> [Storing OpenAI embeddings in Postgres with pgvector - https://supabase.com/blog/openai-embeddings-postgres-vector](https://supabase.com/blog/openai-embeddings-postgres-vector)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## LEIA MAIS
+
+1. [Getting Started With Embeddings (huggingface.co)](https://huggingface.co/blog/getting-started-with-embeddings)
+2. [Embeddings de Palavras  |  TensorFlow Core](https://www.tensorflow.org/tutorials/text/word_embeddings?hl=pt-BR)
+3. [Embeddings  |  Machine Learning  |  Google for Developers](https://developers.google.com/machine-learning/crash-course/embeddings/video-lecture?hl=pt-br)
+4. [Introdução a incorporações de texto e código | OpenAI](https://openai.com/index/introducing-text-and-code-embeddings/)
+5. [Machine Learning  |  Google for Developers](https://developers.google.com/machine-learning?hl=pt-br)
+6. [The Official LangChain.js Course (scrimba.com)](https://v2.scrimba.com/the-official-langchainjs-course-c02t)
+7. [Learn AI Agents (scrimba.com)](https://v2.scrimba.com/learn-ai-agents-c034)
