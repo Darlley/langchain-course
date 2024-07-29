@@ -1,6 +1,8 @@
-IA - EMBEDDINGS
+# LANGCHAIN COURSE
 
-Quando você faz uma pergunta ela precisa traduzi-la em um formato que a IA entende: os embeddings, sinônimo de vetores, que é um conceito matemático e significa colocar um objeto em um espaço diferente.
+vídeo: https://youtu.be/HSZ_uaif57o
+
+Quando você faz uma pergunta ela precisa ser traduzida em um formato que a IA entenda: os embeddings, sinônimo de vetores, que é um conceito matemático e significa colocar um objeto em um espaço diferente.
 
 > [!NOTE]
 > Os modelos de aprendizado de máquina usam vetores (matrizes de números) como entrada. Ao trabalhar com texto, a primeira coisa que você deve fazer é criar uma estratégia para converter strings em números (ou "vetorizar" o texto) antes de alimentá-lo ao modelo. [https://www.tensorflow.org/text/guide/word_embeddings?hl=pt-br](https://www.tensorflow.org/text/guide/word_embeddings?hl=pt-br)
@@ -34,7 +36,6 @@ Imaginando que exista a palavra "queen" na posição (2, 6.2) esta seria o signi
 > [Storing OpenAI embeddings in Postgres with pgvector - https://supabase.com/blog/openai-embeddings-postgres-vector](https://supabase.com/blog/openai-embeddings-postgres-vector)
 
 
-
 ## LEIA MAIS
 
 1. [Getting Started With Embeddings (huggingface.co)](https://huggingface.co/blog/getting-started-with-embeddings)
@@ -44,3 +45,41 @@ Imaginando que exista a palavra "queen" na posição (2, 6.2) esta seria o signi
 5. [Machine Learning  |  Google for Developers](https://developers.google.com/machine-learning?hl=pt-br)
 6. [The Official LangChain.js Course (scrimba.com)](https://v2.scrimba.com/the-official-langchainjs-course-c02t)
 7. [Learn AI Agents (scrimba.com)](https://v2.scrimba.com/learn-ai-agents-c034)
+
+# PROJETO
+
+![FLOW](https://raw.githubusercontent.com/Darlley/langchain-course/main/image.png)
+
+A imagem descreve um fluxo de respostas a perguntas do usuário usando OpenAI + Lanchain + Supabase
+
+1. Input do Usuário
+2. A pergunta do usuário é reformulada para ficar mais direta, sem a necessidade de contexto adicional.
+
+```
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { PromptTemplate } from "langchain/prompts";
+```
+3. É gerado os embeddings da pergunta reformulada
+
+```
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+```
+4. Encontrar a Correspondência Mais Próxima nos Vetores armazenados no Supabase
+
+```
+import { createClient } from '@supabase/supabase-js';
+import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
+```
+
+
+5. A resposta é gerada usando a Correspondência Mais Próxima + Entrada do Usuário + O histórico da conversa
+
+```
+import { ConversationalRetrievalQAChain } from 'langchain/chains';
+```
+
+6. A memória da conversa é atualizada com a nova interação
+
+```
+import { ConversationMemory } from 'langchain/memory';
+```
