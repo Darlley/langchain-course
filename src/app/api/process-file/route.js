@@ -1,15 +1,23 @@
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { createClient } from '@supabase/supabase-js';
-import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { NextResponse } from 'next/server';
+
+import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
+import { OpenAIEmbeddings } from '@langchain/openai';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { createClient } from '@supabase/supabase-js';
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const SUPABASE_PRIVATE_KEY = process.env.SUPABASE_PRIVATE_KEY;
+const SUPABASE_URL = process.env.SUPABASE_URL;
 
 export async function POST(request) {
   try {
     const { text } = await request.json();
 
     if (!text) {
-      return NextResponse.json({ error: 'Texto não fornecido.' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Texto não fornecido.' },
+        { status: 400 }
+      );
     }
 
     const splitter = new RecursiveCharacterTextSplitter({
@@ -20,28 +28,32 @@ export async function POST(request) {
 
     const output = await splitter.createDocuments([text]);
 
-    const sbApiKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const openAIApiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-
-    if (!sbApiKey || !sbUrl || !openAIApiKey) {
-      return NextResponse.json({ error: 'Variáveis de ambiente faltando.' }, { status: 500 });
+    if (!SUPABASE_PRIVATE_KEY || !SUPABASE_URL || !OPENAI_API_KEY) {
+      return NextResponse.json(
+        { error: 'Variáveis de ambiente faltando.' },
+        { status: 500 }
+      );
     }
 
-    const client = createClient(sbUrl, sbApiKey);
+    const client = createClient(SUPABASE_URL, SUPABASE_PRIVATE_KEY);
 
     await SupabaseVectorStore.fromDocuments(
       output,
-      new OpenAIEmbeddings({ openAIApiKey }),
+      new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
       {
         client,
         tableName: 'documents',
       }
     );
 
-    return NextResponse.json({ message: 'Documento processado e armazenado com sucesso.' });
+    return NextResponse.json({
+      message: 'Documento processado e armazenado com sucesso.',
+    });
   } catch (err) {
     console.error('Erro ao processar o documento:', err);
-    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Erro interno do servidor.' },
+      { status: 500 }
+    );
   }
 }
